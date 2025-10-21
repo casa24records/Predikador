@@ -8,7 +8,12 @@ const path = require('path');
  */
 function loadLatestData() {
   try {
-    const dataPath = path.join(__dirname, '../../data/latest.json');
+    // Support environment variable for custom data path (Railway/production)
+    const dataPath = process.env.DATA_PATH
+      ? path.resolve(process.env.DATA_PATH)
+      : path.join(__dirname, '../../data/latest.json');
+
+    console.log(`Loading data from: ${dataPath}`);
     const data = fsSync.readFileSync(dataPath, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
@@ -23,7 +28,11 @@ function loadLatestData() {
  */
 async function loadLatestDataAsync() {
   try {
-    const dataPath = path.join(__dirname, '../../data/latest.json');
+    // Support environment variable for custom data path (Railway/production)
+    const dataPath = process.env.DATA_PATH
+      ? path.resolve(process.env.DATA_PATH)
+      : path.join(__dirname, '../../data/latest.json');
+
     const data = await fs.readFile(dataPath, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
@@ -39,7 +48,12 @@ async function loadLatestDataAsync() {
  */
 function loadHistoricalData(days = 30) {
   try {
-    const historicalPath = path.join(__dirname, '../../data/historical');
+    // Support environment variable for custom data path (Railway/production)
+    const historicalPath = process.env.HISTORICAL_DATA_PATH
+      ? path.resolve(process.env.HISTORICAL_DATA_PATH)
+      : path.join(__dirname, '../../data/historical');
+
+    console.log(`Loading historical data from: ${historicalPath}`);
     const files = fsSync.readdirSync(historicalPath);
 
     // Filter JSON files and sort by date (newest first)
@@ -71,7 +85,11 @@ function loadHistoricalData(days = 30) {
  */
 async function loadHistoricalDataAsync(days = 30) {
   try {
-    const historicalPath = path.join(__dirname, '../../data/historical');
+    // Support environment variable for custom data path (Railway/production)
+    const historicalPath = process.env.HISTORICAL_DATA_PATH
+      ? path.resolve(process.env.HISTORICAL_DATA_PATH)
+      : path.join(__dirname, '../../data/historical');
+
     const files = await fs.readdir(historicalPath);
 
     // Filter JSON files and sort by date (newest first)
