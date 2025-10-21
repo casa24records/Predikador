@@ -9,9 +9,18 @@ const path = require('path');
 function loadLatestData() {
   try {
     // Support environment variable for custom data path (Railway/production)
-    const dataPath = process.env.DATA_PATH
+    let dataPath = process.env.DATA_PATH
       ? path.resolve(process.env.DATA_PATH)
       : path.join(__dirname, '../../data/latest.json');
+
+    // If path doesn't exist, try local copy in bot directory
+    if (!fsSync.existsSync(dataPath)) {
+      const localPath = path.join(__dirname, '../data/latest.json');
+      if (fsSync.existsSync(localPath)) {
+        console.log(`⚠️  Configured path not found, using local copy: ${localPath}`);
+        dataPath = localPath;
+      }
+    }
 
     console.log(`Loading data from: ${dataPath}`);
     const data = fsSync.readFileSync(dataPath, 'utf-8');
@@ -49,9 +58,18 @@ async function loadLatestDataAsync() {
 function loadHistoricalData(days = 30) {
   try {
     // Support environment variable for custom data path (Railway/production)
-    const historicalPath = process.env.HISTORICAL_DATA_PATH
+    let historicalPath = process.env.HISTORICAL_DATA_PATH
       ? path.resolve(process.env.HISTORICAL_DATA_PATH)
       : path.join(__dirname, '../../data/historical');
+
+    // If path doesn't exist, try local copy in bot directory
+    if (!fsSync.existsSync(historicalPath)) {
+      const localPath = path.join(__dirname, '../data/historical');
+      if (fsSync.existsSync(localPath)) {
+        console.log(`⚠️  Configured path not found, using local copy: ${localPath}`);
+        historicalPath = localPath;
+      }
+    }
 
     console.log(`Loading historical data from: ${historicalPath}`);
     const files = fsSync.readdirSync(historicalPath);
