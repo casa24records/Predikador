@@ -1,0 +1,187 @@
+{
+  "date": "2025-10-20",
+  "discord": {
+    "member_count": 0,
+    "online_count": 0,
+    "server_name": null,
+    "server_id": null
+  },
+  "artists": [
+    {
+      "name": "Casa 24",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "casa24records",
+        "name": "Casa 24"
+      }
+    },
+    {
+      "name": "Chef Lino",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "chef_lino99",
+        "name": "Chef Lino"
+      }
+    },
+    {
+      "name": "PYRO",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "pyro_0201",
+        "name": "PYRO"
+      }
+    },
+    {
+      "name": "bo.wlie",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "the.bowlieexperience",
+        "name": "bo.wlie"
+      }
+    },
+    {
+      "name": "Mango Blade",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "mangobladesonics",
+        "name": "Mango Blade"
+      }
+    },
+    {
+      "name": "ZACKO",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "zacko.____",
+        "name": "ZACKO"
+      }
+    },
+    {
+      "name": "ARANDA",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "arandajrr",
+        "name": "ARANDA"
+      }
+    },
+    {
+      "name": "Casa 24Beats",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": null,
+        "name": null
+      }
+    }
+  ]
+}

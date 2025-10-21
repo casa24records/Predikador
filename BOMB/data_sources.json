@@ -1,0 +1,302 @@
+{
+  "meta": {
+    "extracted_date": "2025-10-17",
+    "purpose": "Preserved data from website files before conversion to Discord bot project",
+    "source_files": [
+      "js/CollectiveOverview.js",
+      "js/about.js",
+      "js/main.js",
+      "js/unmastered.js",
+      "js/life24.js",
+      "data/historical/2025-10-15.json",
+      "index.html"
+    ]
+  },
+  "artists": {
+    "Casa 24": {
+      "spotify_id": "2QpRYjtwNg9z6KwD4fhC5h",
+      "youtube_channel_id": "@Casa24records",
+      "instagram_username": "casa24records",
+      "role": "Main Label/Collective",
+      "description": "Casa 24 Records main collective account"
+    },
+    "Chef Lino": {
+      "spotify_id": "56tisU5xMB4CYyzG99hyBN",
+      "youtube_channel_id": "@chef_lino99",
+      "instagram_username": null,
+      "role": "Artist/CEO",
+      "description": "Co-founder and CEO of Casa 24 Records",
+      "color": "#4A90E2",
+      "initials": "CL"
+    },
+    "PYRO": {
+      "spotify_id": "5BsYYsSnFsE9SoovY7aQV0",
+      "youtube_channel_id": "@Pyro_0201",
+      "instagram_username": null,
+      "role": "Artist/Producer",
+      "description": "Multi-talented artist and producer",
+      "color": "#FFD700",
+      "initials": "PY"
+    },
+    "bo.wlie": {
+      "spotify_id": "2DqDBHhQzNE3KHZq6yKG96",
+      "youtube_channel_id": "@prodbybowlie",
+      "instagram_username": null,
+      "role": "Artist/Master Producer",
+      "description": "Versatile artist and master producer",
+      "color": "#9B59B6",
+      "initials": "BW"
+    },
+    "Mango Blade": {
+      "spotify_id": "4vYClJG7K1FGWMMalEW5Hg",
+      "youtube_channel_id": "@mangobladesonics",
+      "instagram_username": null,
+      "role": "Artist/Producer",
+      "description": "Artist and producer, co-founder",
+      "color": "#00a651",
+      "initials": "MB"
+    },
+    "ZACKO": {
+      "spotify_id": "3gXXs7vEDPmeJ2HAOCGi8e",
+      "youtube_channel_id": null,
+      "instagram_username": null,
+      "role": "Artist/Producer",
+      "description": "Dynamic artist and producer",
+      "color": "#FF0000",
+      "initials": "ZK"
+    },
+    "ARANDA": {
+      "spotify_id": "7DFovnGo8GZX5PuEyXh6LV",
+      "youtube_channel_id": null,
+      "instagram_username": null,
+      "role": "Artist/Producer",
+      "description": "Innovative artist and producer",
+      "display_name": "ArandaJr",
+      "color": "#59B324",
+      "initials": "AR"
+    },
+    "Casa 24Beats": {
+      "spotify_id": null,
+      "youtube_channel_id": "@casa24Beats",
+      "instagram_username": null,
+      "role": "Beat Channel",
+      "description": "Casa 24 instrumental/beats channel"
+    },
+    "Heisen": {
+      "spotify_id": null,
+      "youtube_channel_id": null,
+      "instagram_username": null,
+      "role": "Tech Guy",
+      "description": "Tech lead and web developer",
+      "color": "#000000",
+      "text_color": "#FFFFFF",
+      "initials": "HE",
+      "border_color": "#FFFFFF"
+    }
+  },
+  "api_endpoints": {
+    "cloudflare_worker": {
+      "url": "https://casa24-api.casa24records.workers.dev",
+      "endpoints": {
+        "credentials": "/api/credentials",
+        "description": "Provides secure API credentials for Google Drive and YouTube APIs"
+      },
+      "description": "Cloudflare Worker API for secure credential management"
+    },
+    "google_apis": {
+      "drive_v3": {
+        "url": "https://www.googleapis.com/drive/v3/files",
+        "description": "Google Drive API v3 for fetching files"
+      },
+      "drive_content": {
+        "url_template": "https://drive.google.com/a/ui/v1/m?id={file_id}",
+        "description": "Direct audio file access"
+      },
+      "drive_preview": {
+        "url_template": "https://drive.google.com/file/d/{file_id}/preview",
+        "description": "File preview embed"
+      },
+      "drive_download": {
+        "url_template": "https://drive.google.com/uc?export=download&id={file_id}",
+        "description": "Direct download link"
+      }
+    },
+    "google_drive_folders": {
+      "untitled_unmastered": {
+        "folder_id": "12JmF908-4lELxUroNiUtycvicatw1J2X",
+        "description": "Audio tracks for untitled unmastered section",
+        "mime_type": "audio/mpeg"
+      },
+      "life_at_24_magazine": {
+        "folder_id": "12p8iE_zMLkzFOgEifhOBGwgSnyla05-s",
+        "description": "PDF magazines for LIFE@24 section",
+        "mime_type": "application/pdf"
+      }
+    }
+  },
+  "configuration": {
+    "brand": {
+      "name": "Casa 24 Records",
+      "alternate_names": ["Casa24", "Casa 24"],
+      "accent_color": "#00a651",
+      "theme_color": "#00a651",
+      "tagline": "Rooted in rebellion, friendship, and creative freedom",
+      "description": "Panama City based music collective and record label rooted in rebellion, friendship, and creative freedom. We blend DIY spirit with boundary pushing artistry, constantly exploring new sounds while staying true to a shared vision: make real music, with real people, in our own way."
+    },
+    "discord": {
+      "server_id": "1000913895415877712",
+      "server_name": "🏠Casa 24",
+      "invite_url": "https://discord.gg/Cp7gtKwc6f",
+      "description": "Official Casa 24 Records Discord server"
+    },
+    "social_media": {
+      "website": "https://casa24records.com",
+      "instagram": "https://instagram.com/casa24records",
+      "youtube": "https://youtube.com/@casa24records",
+      "tiktok": "https://tiktok.com/@casa24records",
+      "twitch": "https://twitch.tv/casa24records",
+      "twitter": "@casa24records"
+    },
+    "genres": [
+      "Rap",
+      "R&B",
+      "Indie",
+      "Bolero",
+      "Salsa",
+      "Punk",
+      "Latin Roots",
+      "latin hip hop"
+    ],
+    "location": {
+      "city": "Panama City",
+      "country": "Panama",
+      "region": "PA",
+      "coordinates": {
+        "latitude": "8.9824",
+        "longitude": "-79.5199"
+      }
+    },
+    "origin_story": {
+      "founding_location": "Purdue University dorm room",
+      "founder": "Mango Blade",
+      "co_founder": "Chef Lino",
+      "first_release": "Tiempos Como Estos EP",
+      "description": "Casa 24 was born in a dorm room at Purdue University, where founder and producer Mango Blade began crafting instrumental projects. After returning to Panama City, Mango teamed up with his brother Chef Lino, who proposed evolving Casa 24 into something bigger: a full-scale record label and artist collective."
+    },
+    "collective_info": {
+      "total_members": 7,
+      "producers": 5,
+      "description": "7 Habitantes obsesionados con la música y la creatividad en el internet",
+      "sound": "Genre-fluid music at the crossroads where rap meets R&B, indie meets bolero, and sometimes salsa or punk",
+      "creative_process": {
+        "weekly_sessions": "7 weekly Discord sessions",
+        "workflow": "Dynamic production hand-offs",
+        "in_house": "Fully in-house workflow",
+        "roles": "Artists write, producers build, engineer polishes"
+      }
+    },
+    "manifesto": [
+      "Casa 24 is more than a label.",
+      "We're a home for artists who value craft, community, and creative control.",
+      "We move smart, stay grounded, and make the kind of music that hits because it's real.",
+      "We're not here to follow trends.",
+      "We're here to build a movement."
+    ],
+    "cache_settings": {
+      "cache_timeout_ms": 300000,
+      "retry_attempts": 3,
+      "retry_delay_ms": 1000
+    },
+    "security": {
+      "allowed_domains": [
+        "drive.google.com",
+        "docs.google.com",
+        "www.googleapis.com",
+        "lh3.googleusercontent.com"
+      ],
+      "api_credentials_source": "Cloudflare Worker with fallback to localStorage"
+    }
+  },
+  "sample_data_structure": {
+    "description": "Example of data structure from historical JSON files (data/historical/*.json)",
+    "latest_snapshot": "2025-10-15",
+    "structure": {
+      "date": "YYYY-MM-DD",
+      "discord": {
+        "member_count": "number",
+        "online_count": "number",
+        "server_name": "string",
+        "server_id": "string"
+      },
+      "artists": [
+        {
+          "name": "string",
+          "spotify": {
+            "popularity_score": "number (0-100)",
+            "followers": "number",
+            "monthly_listeners": "string",
+            "genres": ["array of strings"],
+            "top_tracks": [
+              {
+                "name": "string",
+                "popularity": "number (0-100)",
+                "preview_url": "string or null"
+              }
+            ]
+          },
+          "youtube": {
+            "subscribers": "number",
+            "total_views": "number",
+            "video_count": "number",
+            "top_videos": [
+              {
+                "title": "string",
+                "views": "number",
+                "video_id": "string",
+                "published_at": "ISO datetime string"
+              }
+            ]
+          },
+          "instagram": {
+            "followers": "number",
+            "media_count": "number",
+            "username": "string",
+            "name": "string"
+          }
+        }
+      ]
+    },
+    "sample_totals": {
+      "date": "2025-10-15",
+      "discord_members": 64,
+      "total_artists": 8,
+      "casa_24_spotify_followers": 523,
+      "casa_24_monthly_listeners": "978",
+      "casa_24_youtube_subscribers": 622,
+      "casa_24_instagram_followers": 1700
+    }
+  },
+  "bot_migration_notes": {
+    "data_collection": "Historical data is stored in data/historical/ folder with daily snapshots in JSON format",
+    "data_loader": "bot/utils/dataLoader.js handles loading and processing historical data",
+    "existing_bot_commands": [
+      "stats - Display artist statistics",
+      "growth - Show growth analytics",
+      "predict - Predict future growth",
+      "artist - Get artist information"
+    ],
+    "analytics_module": "bot/utils/analytics.js provides growth calculations and predictions",
+    "data_source_priority": [
+      "1. Use existing historical data from data/historical/ folder",
+      "2. Cloudflare Worker API for credentials",
+      "3. Direct Google APIs with proper authentication"
+    ],
+    "recommendations": [
+      "Keep historical data folder for analytics",
+      "Continue using Cloudflare Worker for secure credential management",
+      "Bot can leverage existing data structure for stats commands",
+      "Consider automated data collection to update historical snapshots",
+      "Artist mappings (Spotify IDs, YouTube channels) are now preserved"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node test-data.js)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n🚀 Initial commit: Casa 24 Records Discord Bot\n\nFeatures:\n- 12 slash commands for analytics and predictions\n- Real-time data from Spotify, YouTube, Instagram, Discord\n- AI predictions using linear regression\n- Artist battles and leaderboards\n- Achievement system and gamification\n- Daily automated data updates via GitHub Actions\n- Zero external API dependencies\n\nBot Commands:\n- /stats - Live collective analytics\n- /growth - Track growth trends\n- /predict - AI-powered predictions\n- /artist - Individual artist profiles\n- /battle - Head-to-head comparisons\n- /leaderboard - Top performers\n- /spotlight - Daily artist feature\n- /viral - Viral potential analysis\n- /momentum - Velocity tracking\n- /milestones - Achievement tracking\n- /weekly - Weekly reports\n- /achievements - Gamification system\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push origin main)",
+      "Bash(git add bot/.gitignore bot/utils/dataLoader.js)",
+      "Bash(git commit -m \"Fix data loading for artist command and improve .gitignore\")",
+      "Bash(git add bot/.env bot/index.js GITHUB_SECRETS_GUIDE.md bot/.gitignore)",
+      "Bash(git add -f bot/.env)",
+      "Bash(git add bot/index.js GITHUB_SECRETS_GUIDE.md bot/.gitignore)",
+      "Bash(git commit -m \"🔐 Security Update: Remove exposed token and add GitHub Secrets guide\n\n- Removed exposed Discord token from .env (token likely revoked by Discord)\n- Added placeholder in .env for GitHub Secrets integration\n- Updated bot to load .env.local for local development\n- Added comprehensive GitHub Secrets setup guide\n- Improved .gitignore to exclude all .env variants\n\nIMPORTANT: Follow GITHUB_SECRETS_GUIDE.md to:\n1. Regenerate your bot token\n2. Add it to GitHub Secrets as DISCORD_BOT_TOKEN\n3. Use .env.local for local development\")",
+      "Bash(node test-connection.js)",
+      "Bash(cat bot/.env.local)",
+      "Bash(tree -L 3 -a)",
+      "Bash(find ./bot -maxdepth 2 -type f ! -path \"./bot/node_modules/*\" -exec ls -lh {} ;)",
+      "Bash(del .env)",
+      "Bash(git add -A)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

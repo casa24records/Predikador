@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # Discord Bot Service
+  discord-bot:
+    build:
+      context: ..
+      dockerfile: infrastructure/dockerfiles/discord.Dockerfile
+    container_name: casa24-discord-bot
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=discord-bot
+      # Discord credentials (add via .env file or secrets)
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+      # Internal service URLs
+      - ANALYTICS_SERVICE_URL=http://analytics:3001
+      - PREDICTION_SERVICE_URL=http://predictions:3002
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - analytics
+      - predictions
+    volumes:
+      - ../data:/app/data:ro  # Read-only access to data files
+    networks:
+      - casa24-network
+
+  # Analytics Service
+  analytics:
+    build:
+      context: ..
+      dockerfile: infrastructure/dockerfiles/analytics.Dockerfile
+    container_name: casa24-analytics
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=analytics-service
+      - PORT=3001
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - ../data:/app/data:ro  # Read-only access to data files
+    networks:
+      - casa24-network
+
+  # Prediction Service (ML/AI)
+  predictions:
+    build:
+      context: ..
+      dockerfile: infrastructure/dockerfiles/predictions.Dockerfile
+    container_name: casa24-predictions
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=prediction-service
+      - PORT=3002
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - ../data:/app/data:ro  # Read-only access to data files
+      - ./models:/app/models  # Trained ML models
+    networks:
+      - casa24-network
+
+  # Data Collection Service (Python)
+  data-collector:
+    build:
+      context: ..
+      dockerfile: infrastructure/dockerfiles/data-collector.Dockerfile
+    container_name: casa24-data-collector
+    restart: "no"  # Runs on schedule, not continuously
+    environment:
+      - PYTHON_ENV=production
+      # API credentials (add via .env file or secrets)
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      - INSTAGRAM_ACCESS_TOKEN=${INSTAGRAM_ACCESS_TOKEN}
+      - CLOUDFLARE_WORKER_URL=${CLOUDFLARE_WORKER_URL}
+    volumes:
+      - ../data:/app/data  # Read-write access for data updates
+    networks:
+      - casa24-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: casa24-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - casa24-network
+
+  # Optional: Web Dashboard (Future)
+  # web-dashboard:
+  #   build:
+  #     context: ..
+  #     dockerfile: infrastructure/dockerfiles/dashboard.Dockerfile
+  #   container_name: casa24-dashboard
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #     - ANALYTICS_API_URL=http://analytics:3001
+  #   networks:
+  #     - casa24-network
+
+  # Optional: PostgreSQL Database (Future)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: casa24-postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_USER=casa24
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #     - POSTGRES_DB=casa24_analytics
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - casa24-network
+
+  # Optional: Monitoring Stack
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: casa24-prometheus
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - casa24-network
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: casa24-grafana
+  #   ports:
+  #     - "3003:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   networks:
+  #     - casa24-network
+
+networks:
+  casa24-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  # postgres_data:
+  # prometheus_data:
+  # grafana_data:

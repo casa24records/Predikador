@@ -1,0 +1,454 @@
+{
+  "date": "2025-09-04",
+  "discord": {
+    "member_count": 59,
+    "online_count": 16,
+    "server_name": "\ud83c\udfe0Casa 24",
+    "server_id": "1000913895415877712"
+  },
+  "artists": [
+    {
+      "name": "Casa 24",
+      "spotify": {
+        "popularity_score": 4,
+        "followers": 507,
+        "monthly_listeners": "1200",
+        "genres": [],
+        "top_tracks": [
+          {
+            "name": "Miradita Bob-Esponja",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Facil Relajado",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Japon",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Lo Q Env Quiero (Real Shit)",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Las Nubes",
+            "popularity": 3,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 622,
+        "total_views": 29137,
+        "video_count": 94,
+        "top_videos": [
+          {
+            "title": "chef lino.mp3 (Prod. Serch x Chef Lino)",
+            "views": 3446,
+            "video_id": "AL40f0Yftlg",
+            "published_at": "2023-04-02T05:00:07Z"
+          },
+          {
+            "title": "IRRESISTIBLE (VIDEO OFICIAL) - Casa 24",
+            "views": 3430,
+            "video_id": "WTg6VKaMvEs",
+            "published_at": "2022-05-20T00:00:09Z"
+          },
+          {
+            "title": "LaQuan & Casa 24 - Llama Si Te Sientes Lonely (Video Oficial)",
+            "views": 2814,
+            "video_id": "rCXFipa8CWQ",
+            "published_at": "2024-08-08T23:00:07Z"
+          },
+          {
+            "title": "Las Nubes (Video Oficial) - Casa 24 x N\u00e9mula",
+            "views": 1289,
+            "video_id": "lvZjo5NJzUE",
+            "published_at": "2022-07-27T00:00:11Z"
+          },
+          {
+            "title": "LaQuan - BREAK (Video Oficial)",
+            "views": 1261,
+            "video_id": "MLTHv39WrqE",
+            "published_at": "2023-06-16T03:00:31Z"
+          }
+        ]
+      },
+      "instagram": {
+        "followers": 1689,
+        "media_count": 577,
+        "username": "casa24records",
+        "name": "Casa 24"
+      }
+    },
+    {
+      "name": "Chef Lino",
+      "spotify": {
+        "popularity_score": 4,
+        "followers": 260,
+        "monthly_listeners": "314",
+        "genres": [
+          "latin hip hop"
+        ],
+        "top_tracks": [
+          {
+            "name": "Miradita Bob-Esponja",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Facil Relajado",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Lo Q Env Quiero (Real Shit)",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Dinosaurios De Juguete",
+            "popularity": 3,
+            "preview_url": null
+          },
+          {
+            "name": "Presidente Extraterrestre",
+            "popularity": 2,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 15,
+        "total_views": 233,
+        "video_count": 5,
+        "top_videos": [
+          {
+            "title": "Personalidades Blandas / Kanye West  [Chef Lino \u202a@casa24records\u202c #3]",
+            "views": 86,
+            "video_id": "falH_K2-Avc",
+            "published_at": "2025-03-27T19:45:56Z"
+          },
+          {
+            "title": "Pensamientos sobre SUPERMAN + Rating [Chef Lino \u202a@casa24records  #5]",
+            "views": 63,
+            "video_id": "6-VE5husMeQ",
+            "published_at": "2025-07-22T16:50:38Z"
+          },
+          {
+            "title": "\u00bfPor qu\u00e9 hago esto? [Chef Lino @casa24records  #2]",
+            "views": 32,
+            "video_id": "_WEbNZUJ6Rs",
+            "published_at": "2025-02-28T18:26:17Z"
+          },
+          {
+            "title": "Chef Lino en Casa 24 VLOG #1 [ Feb 17, 2025 ]",
+            "views": 28,
+            "video_id": "AU2eD4leB_E",
+            "published_at": "2025-02-17T21:17:57Z"
+          },
+          {
+            "title": "Elegancia como Droga / Sinceridad Extrema  [Chef Lino \u202a@casa24records\u202c #4]",
+            "views": 24,
+            "video_id": "iCv8NOeCH0M",
+            "published_at": "2025-07-17T18:51:15Z"
+          }
+        ]
+      },
+      "instagram": {
+        "followers": 1350,
+        "media_count": 5,
+        "username": "chef_lino99",
+        "name": "Chef Lino"
+      }
+    },
+    {
+      "name": "PYRO",
+      "spotify": {
+        "popularity_score": 1,
+        "followers": 252,
+        "monthly_listeners": "114",
+        "genres": [],
+        "top_tracks": [
+          {
+            "name": "Las Nubes",
+            "popularity": 3,
+            "preview_url": null
+          },
+          {
+            "name": "Fuck Not Attempting",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "Irresistible",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "que hubiera sido",
+            "popularity": 0,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": "PYRO_0201",
+        "name": "PYRO"
+      }
+    },
+    {
+      "name": "bo.wlie",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 89,
+        "monthly_listeners": "17",
+        "genres": [],
+        "top_tracks": [
+          {
+            "name": "2ds4u",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "PIKMIN BEAT",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "ATE MY WEIGHT IN OLIVE LEAVES",
+            "popularity": 0,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 94,
+        "total_views": 13788,
+        "video_count": 71,
+        "top_videos": [
+          {
+            "title": "(FREE) \"Keep Fightin\" JID x Isaiah Rashad Type Beat.",
+            "views": 2174,
+            "video_id": "ZJfy-F2DwSg",
+            "published_at": "2023-10-09T19:14:43Z"
+          },
+          {
+            "title": "(FREE) \"Bars\" JID x Mick Jenkins Type Beat.",
+            "views": 606,
+            "video_id": "6CFb2_e1WpQ",
+            "published_at": "2023-10-17T23:56:27Z"
+          },
+          {
+            "title": "(FREE) \"Data\" Isaiah Rashad x Aaron May Type Beat.",
+            "views": 309,
+            "video_id": "5mrghzhgtGc",
+            "published_at": "2023-09-21T22:45:53Z"
+          },
+          {
+            "title": "(FREE) \"Around\" Isaiah Rashad x JID Type Beat.",
+            "views": 296,
+            "video_id": "EZ5ry882f8A",
+            "published_at": "2023-09-13T22:20:24Z"
+          },
+          {
+            "title": "(FREE) \"Case\" JID x Mick Jenkins Type Beat.",
+            "views": 239,
+            "video_id": "RzUtB8x1cYo",
+            "published_at": "2023-10-25T01:06:28Z"
+          }
+        ]
+      },
+      "instagram": {
+        "followers": 595,
+        "media_count": 69,
+        "username": "the.bowlieexperience",
+        "name": "bo.wlie"
+      }
+    },
+    {
+      "name": "Mango Blade",
+      "spotify": {
+        "popularity_score": 1,
+        "followers": 180,
+        "monthly_listeners": "122",
+        "genres": [],
+        "top_tracks": [
+          {
+            "name": "Japon",
+            "popularity": 4,
+            "preview_url": null
+          },
+          {
+            "name": "Cigarrillos en el Cenicero",
+            "popularity": 1,
+            "preview_url": null
+          },
+          {
+            "name": "Cherry Trees",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "Scorsese",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "Harlem",
+            "popularity": 0,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 621,
+        "media_count": 9,
+        "username": "mangobladesonics",
+        "name": "Mango Blade"
+      }
+    },
+    {
+      "name": "ZACKO",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 7,
+        "monthly_listeners": "0",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 503,
+        "media_count": 21,
+        "username": "zacko.____",
+        "name": "ZACKO \u2600\ufe0f"
+      }
+    },
+    {
+      "name": "ARANDA",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 104,
+        "monthly_listeners": "6",
+        "genres": [],
+        "top_tracks": [
+          {
+            "name": "Mi Oasis",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "que hubiera sido",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "1020",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "no quiero volver a mi casa",
+            "popularity": 0,
+            "preview_url": null
+          },
+          {
+            "name": "Wipe my Life Away",
+            "popularity": 0,
+            "preview_url": null
+          }
+        ]
+      },
+      "youtube": {
+        "subscribers": 0,
+        "total_views": 0,
+        "video_count": 0,
+        "top_videos": []
+      },
+      "instagram": {
+        "followers": 1162,
+        "media_count": 33,
+        "username": "arandajrr",
+        "name": "ARANDA"
+      }
+    },
+    {
+      "name": "Casa 24Beats",
+      "spotify": {
+        "popularity_score": 0,
+        "followers": 0,
+        "monthly_listeners": "N/A",
+        "genres": [],
+        "top_tracks": []
+      },
+      "youtube": {
+        "subscribers": 11,
+        "total_views": 1819,
+        "video_count": 78,
+        "top_videos": [
+          {
+            "title": "\ud83d\udd25BEAT 4 SALE #hiphopsoul",
+            "views": 160,
+            "video_id": "WaAD53JZ5i4",
+            "published_at": "2025-09-02T14:15:32Z"
+          },
+          {
+            "title": "\ud83d\udd25BEAT 4 SALE #bossanova",
+            "views": 156,
+            "video_id": "ckIzf5ShPrw",
+            "published_at": "2025-08-28T16:01:34Z"
+          },
+          {
+            "title": "\ud83d\udd25BEAT 4 SALE #amin\u00e9typebeat",
+            "views": 156,
+            "video_id": "N4fOJ6Nrt4g",
+            "published_at": "2025-08-14T23:03:48Z"
+          },
+          {
+            "title": "\ud83d\udd25BEAT 4 SALE #NEO-SOUL",
+            "views": 137,
+            "video_id": "JEvwEcQd4h8",
+            "published_at": "2025-08-07T17:21:07Z"
+          },
+          {
+            "title": "\ud83d\udd25BEAT 4 SALE #hiphop",
+            "views": 62,
+            "video_id": "5YtMw8cFv8A",
+            "published_at": "2025-08-27T13:30:14Z"
+          }
+        ]
+      },
+      "instagram": {
+        "followers": 0,
+        "media_count": 0,
+        "username": null,
+        "name": null
+      }
+    }
+  ]
+}

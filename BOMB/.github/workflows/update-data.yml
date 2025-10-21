@@ -1,0 +1,78 @@
+name: Update Spotify Data
+on:
+  schedule:
+    # Changed from midnight to 2:30 AM UTC to avoid peak load
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual run'
+        required: false
+        default: 'Manual trigger'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Verify execution context
+        run: |
+          echo "Workflow triggered by: ${{ github.event_name }}"
+          echo "Execution time: $(date -u)"
+          echo "Repository: ${{ github.repository }}"
+          echo "Worker API URL configured: ${{ vars.WORKER_API_URL || 'NOT SET' }}"
+          
+      - name: Run data collection
+        run: |
+          python scripts/collect_data.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          WORKER_API_URL: ${{ vars.WORKER_API_URL }}  # Set this in GitHub repo settings
+          WORKER_API_KEY: ${{ secrets.WORKER_API_KEY }}  # Optional: Only if you add authentication
+          
+      - name: Check for data changes
+        id: check_changes
+        run: |
+          git diff --exit-code data/ || echo "changes=true" >> $GITHUB_OUTPUT
+          
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/
+          git commit -m "Update Spotify data - $(date -u)"
+          git push
+          
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Spotify Data Collection Failed',
+              body: `Workflow failed at ${new Date().toISOString()}\n\nCheck the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`
+            })
