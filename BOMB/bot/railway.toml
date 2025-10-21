@@ -1,0 +1,13 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[env]
+NODE_ENV = "production"
+DATA_PATH = "../data/latest.json"
+HISTORICAL_DATA_PATH = "../data/historical"
