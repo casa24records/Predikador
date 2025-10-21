@@ -3,31 +3,140 @@ const fsSync = require('fs');
 const path = require('path');
 
 /**
+ * Get all possible data file locations (in priority order)
+ * @returns {Array<string>} Array of possible file paths
+ */
+function getPossibleDataPaths() {
+  return [
+    // 1. Environment variable (highest priority)
+    process.env.DATA_PATH ? path.resolve(process.env.DATA_PATH) : null,
+
+    // 2. Local copy in bot directory (Railway deployment)
+    path.join(__dirname, '../data/latest.json'),
+
+    // 3. Parent data directory (local development from bot/)
+    path.join(__dirname, '../../data/latest.json'),
+
+    // 4. Process CWD relative paths
+    path.join(process.cwd(), 'data/latest.json'),
+    path.join(process.cwd(), 'BOMB/data/latest.json'),
+    path.join(process.cwd(), 'bot/data/latest.json'),
+
+    // 5. Absolute paths from process CWD
+    path.join(process.cwd(), '../data/latest.json'),
+  ].filter(p => p !== null); // Remove null entries
+}
+
+/**
+ * Get all possible historical data directory locations (in priority order)
+ * @returns {Array<string>} Array of possible directory paths
+ */
+function getPossibleHistoricalPaths() {
+  return [
+    // 1. Environment variable (highest priority)
+    process.env.HISTORICAL_DATA_PATH ? path.resolve(process.env.HISTORICAL_DATA_PATH) : null,
+
+    // 2. Local copy in bot directory (Railway deployment)
+    path.join(__dirname, '../data/historical'),
+
+    // 3. Parent data directory (local development from bot/)
+    path.join(__dirname, '../../data/historical'),
+
+    // 4. Process CWD relative paths
+    path.join(process.cwd(), 'data/historical'),
+    path.join(process.cwd(), 'BOMB/data/historical'),
+    path.join(process.cwd(), 'bot/data/historical'),
+
+    // 5. Absolute paths from process CWD
+    path.join(process.cwd(), '../data/historical'),
+  ].filter(p => p !== null); // Remove null entries
+}
+
+/**
+ * Find the first existing file from a list of possible paths
+ * @param {Array<string>} paths - Array of possible file paths
+ * @param {string} fileType - Description of file type for logging
+ * @returns {string|null} The first existing path or null
+ */
+function findFirstExistingPath(paths, fileType) {
+  console.log(`========================================`);
+  console.log(`🔍 Searching for ${fileType}...`);
+  console.log(`========================================`);
+
+  for (let i = 0; i < paths.length; i++) {
+    const testPath = paths[i];
+    console.log(`   ${i + 1}. Testing: ${testPath}`);
+
+    try {
+      if (fsSync.existsSync(testPath)) {
+        const stats = fsSync.statSync(testPath);
+
+        if (stats.isFile()) {
+          console.log(`   ✅ FOUND! File exists (${stats.size} bytes)`);
+          console.log(`========================================`);
+          return testPath;
+        } else if (stats.isDirectory()) {
+          const files = fsSync.readdirSync(testPath);
+          console.log(`   ✅ FOUND! Directory exists (${files.length} items)`);
+          console.log(`========================================`);
+          return testPath;
+        }
+      } else {
+        console.log(`   ❌ Does not exist`);
+      }
+    } catch (error) {
+      console.log(`   ❌ Error checking path: ${error.message}`);
+    }
+  }
+
+  console.log(`   ❌ NOT FOUND in any location`);
+  console.log(`========================================`);
+  return null;
+}
+
+/**
  * Load the latest analytics data (synchronous version for commands)
  * @returns {Object} Latest analytics data
  */
 function loadLatestData() {
-  try {
-    // Support environment variable for custom data path (Railway/production)
-    let dataPath = process.env.DATA_PATH
-      ? path.resolve(process.env.DATA_PATH)
-      : path.join(__dirname, '../../data/latest.json');
+  const possiblePaths = getPossibleDataPaths();
+  const dataPath = findFirstExistingPath(possiblePaths, 'latest.json');
 
-    // If path doesn't exist, try local copy in bot directory
-    if (!fsSync.existsSync(dataPath)) {
-      const localPath = path.join(__dirname, '../data/latest.json');
-      if (fsSync.existsSync(localPath)) {
-        console.log(`⚠️  Configured path not found, using local copy: ${localPath}`);
-        dataPath = localPath;
-      }
+  if (!dataPath) {
+    console.error('');
+    console.error('========================================');
+    console.error('❌ CRITICAL ERROR: No data file found!');
+    console.error('========================================');
+    console.error('Searched in these locations:');
+    possiblePaths.forEach((p, i) => console.error(`   ${i + 1}. ${p}`));
+    console.error('');
+    console.error('Please ensure data files are deployed correctly.');
+    console.error('========================================');
+    throw new Error('Failed to load analytics data - no data file found');
+  }
+
+  try {
+    console.log(`📖 Reading data from: ${dataPath}`);
+    const data = fsSync.readFileSync(dataPath, 'utf-8');
+    const parsed = JSON.parse(data);
+
+    // Validate data structure
+    if (!parsed.artists || !Array.isArray(parsed.artists)) {
+      console.error('⚠️  Warning: Data file has unexpected structure');
+    } else {
+      console.log(`✅ Successfully loaded data with ${parsed.artists.length} artists`);
     }
 
-    console.log(`Loading data from: ${dataPath}`);
-    const data = fsSync.readFileSync(dataPath, 'utf-8');
-    return JSON.parse(data);
+    return parsed;
   } catch (error) {
-    console.error('Error loading latest data:', error);
-    throw new Error('Failed to load analytics data');
+    console.error('');
+    console.error('========================================');
+    console.error('❌ ERROR READING DATA FILE');
+    console.error('========================================');
+    console.error(`File path: ${dataPath}`);
+    console.error(`Error: ${error.message}`);
+    console.error('========================================');
+    throw new Error(`Failed to read/parse analytics data: ${error.message}`);
   }
 }
 
@@ -36,18 +145,58 @@ function loadLatestData() {
  * @returns {Promise<Object>} Latest analytics data
  */
 async function loadLatestDataAsync() {
-  try {
-    // Support environment variable for custom data path (Railway/production)
-    const dataPath = process.env.DATA_PATH
-      ? path.resolve(process.env.DATA_PATH)
-      : path.join(__dirname, '../../data/latest.json');
+  const possiblePaths = getPossibleDataPaths();
 
-    const data = await fs.readFile(dataPath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading latest data:', error);
-    throw new Error('Failed to load analytics data');
+  console.log(`========================================`);
+  console.log(`🔍 Searching for latest.json (async)...`);
+  console.log(`========================================`);
+
+  // Try each path
+  for (let i = 0; i < possiblePaths.length; i++) {
+    const testPath = possiblePaths[i];
+    console.log(`   ${i + 1}. Testing: ${testPath}`);
+
+    try {
+      // Check if file exists
+      const stats = await fs.stat(testPath);
+
+      if (stats.isFile()) {
+        console.log(`   ✅ FOUND! File exists (${stats.size} bytes)`);
+        console.log(`========================================`);
+        console.log(`📖 Reading data from: ${testPath}`);
+
+        const data = await fs.readFile(testPath, 'utf-8');
+        const parsed = JSON.parse(data);
+
+        // Validate data structure
+        if (!parsed.artists || !Array.isArray(parsed.artists)) {
+          console.error('⚠️  Warning: Data file has unexpected structure');
+        } else {
+          console.log(`✅ Successfully loaded data with ${parsed.artists.length} artists`);
+        }
+
+        return parsed;
+      } else {
+        console.log(`   ❌ Path exists but is not a file`);
+      }
+    } catch (error) {
+      console.log(`   ❌ ${error.code === 'ENOENT' ? 'Does not exist' : error.message}`);
+    }
   }
+
+  // No file found
+  console.log(`   ❌ NOT FOUND in any location`);
+  console.log(`========================================`);
+  console.error('');
+  console.error('========================================');
+  console.error('❌ CRITICAL ERROR: No data file found!');
+  console.error('========================================');
+  console.error('Searched in these locations:');
+  possiblePaths.forEach((p, i) => console.error(`   ${i + 1}. ${p}`));
+  console.error('');
+  console.error('Please ensure data files are deployed correctly.');
+  console.error('========================================');
+  throw new Error('Failed to load analytics data - no data file found');
 }
 
 /**
@@ -56,22 +205,24 @@ async function loadLatestDataAsync() {
  * @returns {Array} Array of historical data objects
  */
 function loadHistoricalData(days = 30) {
+  const possiblePaths = getPossibleHistoricalPaths();
+  const historicalPath = findFirstExistingPath(possiblePaths, 'historical directory');
+
+  if (!historicalPath) {
+    console.error('');
+    console.error('========================================');
+    console.error('⚠️  WARNING: No historical data found!');
+    console.error('========================================');
+    console.error('Searched in these locations:');
+    possiblePaths.forEach((p, i) => console.error(`   ${i + 1}. ${p}`));
+    console.error('');
+    console.error('Historical data features will not be available.');
+    console.error('========================================');
+    return [];
+  }
+
   try {
-    // Support environment variable for custom data path (Railway/production)
-    let historicalPath = process.env.HISTORICAL_DATA_PATH
-      ? path.resolve(process.env.HISTORICAL_DATA_PATH)
-      : path.join(__dirname, '../../data/historical');
-
-    // If path doesn't exist, try local copy in bot directory
-    if (!fsSync.existsSync(historicalPath)) {
-      const localPath = path.join(__dirname, '../data/historical');
-      if (fsSync.existsSync(localPath)) {
-        console.log(`⚠️  Configured path not found, using local copy: ${localPath}`);
-        historicalPath = localPath;
-      }
-    }
-
-    console.log(`Loading historical data from: ${historicalPath}`);
+    console.log(`📚 Loading historical data from: ${historicalPath}`);
     const files = fsSync.readdirSync(historicalPath);
 
     // Filter JSON files and sort by date (newest first)
@@ -81,17 +232,39 @@ function loadHistoricalData(days = 30) {
       .reverse()
       .slice(0, days);
 
+    console.log(`   Found ${jsonFiles.length} historical files (requesting ${days} days)`);
+
     const historicalData = [];
+    let successCount = 0;
+    let errorCount = 0;
+
     for (const file of jsonFiles) {
-      const filePath = path.join(historicalPath, file);
-      const content = fsSync.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(content);
-      historicalData.push(data);
+      try {
+        const filePath = path.join(historicalPath, file);
+        const content = fsSync.readFileSync(filePath, 'utf-8');
+        const data = JSON.parse(content);
+        historicalData.push(data);
+        successCount++;
+      } catch (fileError) {
+        console.error(`   ⚠️  Failed to load ${file}: ${fileError.message}`);
+        errorCount++;
+      }
+    }
+
+    console.log(`✅ Loaded ${successCount} historical files successfully`);
+    if (errorCount > 0) {
+      console.log(`⚠️  ${errorCount} files failed to load`);
     }
 
     return historicalData;
   } catch (error) {
-    console.error('Error loading historical data:', error);
+    console.error('');
+    console.error('========================================');
+    console.error('❌ ERROR LOADING HISTORICAL DATA');
+    console.error('========================================');
+    console.error(`Directory: ${historicalPath}`);
+    console.error(`Error: ${error.message}`);
+    console.error('========================================');
     return [];
   }
 }
@@ -102,12 +275,53 @@ function loadHistoricalData(days = 30) {
  * @returns {Promise<Array>} Array of historical data objects
  */
 async function loadHistoricalDataAsync(days = 30) {
-  try {
-    // Support environment variable for custom data path (Railway/production)
-    const historicalPath = process.env.HISTORICAL_DATA_PATH
-      ? path.resolve(process.env.HISTORICAL_DATA_PATH)
-      : path.join(__dirname, '../../data/historical');
+  const possiblePaths = getPossibleHistoricalPaths();
 
+  console.log(`========================================`);
+  console.log(`🔍 Searching for historical directory (async)...`);
+  console.log(`========================================`);
+
+  let historicalPath = null;
+
+  // Try each path
+  for (let i = 0; i < possiblePaths.length; i++) {
+    const testPath = possiblePaths[i];
+    console.log(`   ${i + 1}. Testing: ${testPath}`);
+
+    try {
+      const stats = await fs.stat(testPath);
+
+      if (stats.isDirectory()) {
+        const files = await fs.readdir(testPath);
+        console.log(`   ✅ FOUND! Directory exists (${files.length} items)`);
+        console.log(`========================================`);
+        historicalPath = testPath;
+        break;
+      } else {
+        console.log(`   ❌ Path exists but is not a directory`);
+      }
+    } catch (error) {
+      console.log(`   ❌ ${error.code === 'ENOENT' ? 'Does not exist' : error.message}`);
+    }
+  }
+
+  if (!historicalPath) {
+    console.log(`   ❌ NOT FOUND in any location`);
+    console.log(`========================================`);
+    console.error('');
+    console.error('========================================');
+    console.error('⚠️  WARNING: No historical data found!');
+    console.error('========================================');
+    console.error('Searched in these locations:');
+    possiblePaths.forEach((p, i) => console.error(`   ${i + 1}. ${p}`));
+    console.error('');
+    console.error('Historical data features will not be available.');
+    console.error('========================================');
+    return [];
+  }
+
+  try {
+    console.log(`📚 Loading historical data from: ${historicalPath}`);
     const files = await fs.readdir(historicalPath);
 
     // Filter JSON files and sort by date (newest first)
@@ -117,17 +331,39 @@ async function loadHistoricalDataAsync(days = 30) {
       .reverse()
       .slice(0, days);
 
+    console.log(`   Found ${jsonFiles.length} historical files (requesting ${days} days)`);
+
     const historicalData = [];
+    let successCount = 0;
+    let errorCount = 0;
+
     for (const file of jsonFiles) {
-      const filePath = path.join(historicalPath, file);
-      const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content);
-      historicalData.push(data);
+      try {
+        const filePath = path.join(historicalPath, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(content);
+        historicalData.push(data);
+        successCount++;
+      } catch (fileError) {
+        console.error(`   ⚠️  Failed to load ${file}: ${fileError.message}`);
+        errorCount++;
+      }
+    }
+
+    console.log(`✅ Loaded ${successCount} historical files successfully`);
+    if (errorCount > 0) {
+      console.log(`⚠️  ${errorCount} files failed to load`);
     }
 
     return historicalData;
   } catch (error) {
-    console.error('Error loading historical data:', error);
+    console.error('');
+    console.error('========================================');
+    console.error('❌ ERROR LOADING HISTORICAL DATA');
+    console.error('========================================');
+    console.error(`Directory: ${historicalPath}`);
+    console.error(`Error: ${error.message}`);
+    console.error('========================================');
     return [];
   }
 }
