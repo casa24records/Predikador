@@ -1,3 +1,4 @@
+# Ignore unnecessary files, but KEEP data folder
 node_modules
 .env
 .env.local
@@ -7,3 +8,6 @@ node_modules
 .github
 *.md
 !README.md
+
+# IMPORTANT: Do NOT ignore ../data/ - bot needs it!
+# The data folder is one level up from bot/

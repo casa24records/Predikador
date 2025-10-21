@@ -2,7 +2,8 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "cd BOMB/bot && npm install"
+    "buildCommand": "cd BOMB/bot && npm install",
+    "watchPatterns": ["BOMB/**"]
   },
   "deploy": {
     "startCommand": "cd BOMB/bot && npm start",
