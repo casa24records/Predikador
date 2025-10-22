@@ -112,8 +112,7 @@ module.exports = {
       }
 
       embed.setFooter({
-        text: `Casa 24 Records - ${historicalData.length} days analyzed`,
-        iconURL: 'https://i.imgur.com/placeholder.png'
+        text: `Casa 24 Records - ${historicalData.length} days analyzed`
       });
 
       await interaction.editReply({ embeds: [embed] });

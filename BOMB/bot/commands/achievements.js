@@ -40,17 +40,18 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
-        const artistName = interaction.options.getString('artist');
-        const category = interaction.options.getString('category') || 'all';
+        try {
+            const artistName = interaction.options.getString('artist');
+            const category = interaction.options.getString('category') || 'all';
 
-        const data = await loadLatestData();
-        const historicalData = await loadHistoricalData(90); // 90 days for comprehensive achievement checking
+            const data = await loadLatestData();
+            const historicalData = await loadHistoricalData(90); // 90 days for comprehensive achievement checking
 
-        if (!data) {
-            return interaction.editReply('❌ Error loading data.');
-        }
+            if (!data) {
+                return interaction.editReply('❌ Error loading data.');
+            }
 
-        // Define all achievements
+            // Define all achievements
         const achievementDefinitions = {
             growth: [
                 { id: 'first_steps', name: '🌱 First Steps', description: 'Reach 100 followers on any platform', check: (artist) => checkFollowerMilestone(artist, 100) },
@@ -75,13 +76,10 @@ module.exports = {
                 { id: 'consistent_creator', name: '🎨 Consistent Creator', description: 'Release content every month for 3 months', check: (artist, hist) => checkContentConsistency(artist, hist, 3) }
             ],
             collective: [
-                { id: 'squad_goals', name: '🎪 Squad Goals', description: 'All artists gain followers same day', check: (artist, hist, allArtists) => checkSquadGoals(hist, allArtists) },
                 { id: 'platform_domination', name: '🌐 Platform Domination', description: '10K+ total followers on one platform', check: (artist) => checkPlatformDomination(artist, 10000) },
-                { id: 'community_milestone', name: '👥 Community Milestone', description: 'Discord reaches 100 members', check: (artist, hist, allArtists, discord) => discord?.member_count >= 100 },
-                { id: 'collective_rise', name: '💪 Collective Rise', description: 'Label gains 1K+ total followers in 7 days', check: (artist, hist, allArtists) => checkCollectiveGrowth(hist, allArtists, 1000, 7) }
+                { id: 'community_milestone', name: '👥 Community Milestone', description: 'Discord reaches 100 members', check: (artist, hist, allArtists, discord) => discord?.member_count >= 100 }
             ],
             rare: [
-                { id: 'triple_crown', name: '🎖️ Triple Crown', description: 'Gain followers on all platforms same day', check: (artist, hist) => checkTripleCrown(artist, hist) },
                 { id: 'diamond_status', name: '💎 Diamond Status', description: 'Reach 100K on any platform', check: (artist) => checkFollowerMilestone(artist, 100000) },
                 { id: 'unicorn_moment', name: '🦄 Unicorn Moment', description: '1000%+ growth on any metric', check: (artist, hist) => checkUnicornGrowth(artist, hist, 1000) },
                 { id: 'legendary', name: '🏅 Legendary', description: 'Appear in top tracks across all platforms', check: (artist) => checkLegendaryStatus(artist) },
@@ -181,7 +179,14 @@ module.exports = {
             });
         }
 
-        await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({ embeds: [embed] });
+        } catch (error) {
+            console.error('Error in /achievements command:', error);
+            await interaction.editReply({
+                content: '❌ Failed to load achievements. Please try again later.',
+                ephemeral: true
+            });
+        }
     },
 };
 
@@ -300,27 +305,10 @@ function checkContentConsistency(artist, historicalData, months) {
     return artist.youtube?.video_count > months * 2;
 }
 
-function checkSquadGoals(historicalData, allArtists) {
-    // Check if all artists grew on the same day
-    // Simplified implementation
-    return false; // Would need more complex logic
-}
-
 function checkPlatformDomination(artist, threshold) {
     return (artist.spotify?.followers >= threshold) ||
            (artist.youtube?.subscribers >= threshold) ||
            (artist.instagram?.followers >= threshold);
-}
-
-function checkCollectiveGrowth(historicalData, allArtists, amount, days) {
-    // Simplified check
-    return false; // Would need to check all artists' growth
-}
-
-function checkTripleCrown(artist, historicalData) {
-    // Check if gained followers on all platforms in same day
-    // Simplified implementation
-    return false;
 }
 
 function checkUnicornGrowth(artist, historicalData, percentage) {

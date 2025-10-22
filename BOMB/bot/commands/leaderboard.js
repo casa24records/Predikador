@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { loadLatestData, loadHistoricalData } = require('../utils/dataLoader');
+const { calculateGrowth } = require('../utils/calculations');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -120,34 +121,13 @@ module.exports = {
                     break;
             }
 
-            // Calculate 7-day growth for all metrics
+            // Calculate 7-day growth for all metrics using shared function
             if (metric !== 'momentum' && historicalData) {
                 const oldData = historicalData[historicalData.length - 1];
                 const oldArtist = oldData.artists?.find(a => a.name === artist.name);
 
                 if (oldArtist) {
-                    let oldValue = 0;
-                    switch (metric) {
-                        case 'spotify-listeners':
-                            oldValue = parseInt(oldArtist.spotify?.monthly_listeners) || 0;
-                            break;
-                        case 'spotify-followers':
-                            oldValue = oldArtist.spotify?.followers || 0;
-                            break;
-                        case 'youtube-subs':
-                            oldValue = oldArtist.youtube?.subscribers || 0;
-                            break;
-                        case 'youtube-views':
-                            oldValue = oldArtist.youtube?.total_views || 0;
-                            break;
-                        case 'instagram-followers':
-                            oldValue = oldArtist.instagram?.followers || 0;
-                            break;
-                    }
-
-                    if (oldValue > 0 && value > 0) {
-                        growth = ((value - oldValue) / oldValue * 100);
-                    }
+                    growth = calculateGrowth(artist, oldArtist, metric);
                 }
             }
 

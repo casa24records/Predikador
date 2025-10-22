@@ -159,8 +159,7 @@ module.exports = {
       }
 
       embed.setFooter({
-        text: `Casa 24 Records - Data as of ${data.date}`,
-        iconURL: 'https://i.imgur.com/placeholder.png'
+        text: `Casa 24 Records - Data as of ${data.date}`
       });
 
       await interaction.editReply({ embeds: [embed] });

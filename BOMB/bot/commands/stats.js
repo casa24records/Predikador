@@ -39,7 +39,6 @@ module.exports = {
         .setColor(0x00a651) // Casa 24 green
         .setTitle('📊 Casa 24 Records - Live Stats')
         .setDescription(`Data as of ${data.date}`)
-        .setThumbnail('https://i.imgur.com/placeholder.png') // Add Casa 24 logo URL
         .addFields(
           {
             name: '🎵 Spotify',
@@ -91,8 +90,7 @@ module.exports = {
       }
 
       embed.setFooter({
-        text: 'Casa 24 Records - We Out Here',
-        iconURL: 'https://i.imgur.com/placeholder.png'
+        text: 'Casa 24 Records - We Out Here'
       })
       .setTimestamp();
 

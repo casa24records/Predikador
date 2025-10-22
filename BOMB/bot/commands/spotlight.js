@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { loadLatestData, loadHistoricalData } = require('../utils/dataLoader');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -264,17 +266,42 @@ function getArtistTagline(artist) {
     return taglines[Math.floor(Math.random() * taglines.length)];
 }
 
-function getSpotifyId(artistName) {
-    // Map artist names to Spotify IDs (from your data)
-    const spotifyIds = {
-        'Casa 24': '2QpRYjtwNg9z6KwD4fhC5h',
-        'Chef Lino': '56tisU5xMB4CYyzG99hyBN',
-        'PYRO': '5BsYYsSnFsE9SoovY7aQV0',
-        'bo.wlie': '2DqDBHhQzNE3KHZq6yKG96',
-        'Mango Blade': '4vYClJG7K1FGWMMalEW5Hg',
-        'ZACKO': '3gXXs7vEDPmeJ2HAOCGi8e',
-        'ARANDA': '7DFovnGo8GZX5PuEyXh6LV'
-    };
+/**
+ * Load artist data from JSON file
+ * @returns {Object} Artist data with Spotify IDs
+ */
+function loadArtistData() {
+    try {
+        // Try multiple possible paths for the artist data file
+        const possiblePaths = [
+            path.join(__dirname, '../../data/artist-data.json'),
+            path.join(__dirname, '../data/artist-data.json'),
+            path.join(process.cwd(), 'data/artist-data.json'),
+            path.join(process.cwd(), 'BOMB/data/artist-data.json')
+        ];
 
-    return spotifyIds[artistName] || '';
+        for (const filePath of possiblePaths) {
+            if (fs.existsSync(filePath)) {
+                const fileContent = fs.readFileSync(filePath, 'utf-8');
+                return JSON.parse(fileContent);
+            }
+        }
+
+        console.warn('Artist data file not found, using fallback empty data');
+        return { artists: [] };
+    } catch (error) {
+        console.error('Error loading artist data:', error);
+        return { artists: [] };
+    }
+}
+
+/**
+ * Get Spotify ID for an artist by name
+ * @param {string} artistName - Name of the artist
+ * @returns {string} Spotify artist ID or empty string
+ */
+function getSpotifyId(artistName) {
+    const artistData = loadArtistData();
+    const artist = artistData.artists.find(a => a.name === artistName);
+    return artist?.spotifyId || '';
 }

@@ -1,0 +1,32 @@
+{
+  "artists": [
+    {
+      "name": "Casa 24",
+      "spotifyId": "2QpRYjtwNg9z6KwD4fhC5h"
+    },
+    {
+      "name": "Chef Lino",
+      "spotifyId": "56tisU5xMB4CYyzG99hyBN"
+    },
+    {
+      "name": "PYRO",
+      "spotifyId": "5BsYYsSnFsE9SoovY7aQV0"
+    },
+    {
+      "name": "bo.wlie",
+      "spotifyId": "2DqDBHhQzNE3KHZq6yKG96"
+    },
+    {
+      "name": "Mango Blade",
+      "spotifyId": "4vYClJG7K1FGWMMalEW5Hg"
+    },
+    {
+      "name": "ZACKO",
+      "spotifyId": "3gXXs7vEDPmeJ2HAOCGi8e"
+    },
+    {
+      "name": "ARANDA",
+      "spotifyId": "7DFovnGo8GZX5PuEyXh6LV"
+    }
+  ]
+}

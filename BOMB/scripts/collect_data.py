@@ -23,8 +23,15 @@ from bs4 import BeautifulSoup
 import html
 import urllib3
 
-# Disable SSL warnings for development
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# SSL verification configuration
+VERIFY_SSL = os.getenv('VERIFY_SSL', 'true').lower() == 'true'
+
+# Debug mode configuration
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
+
+# Disable SSL warnings only if SSL verification is disabled
+if not VERIFY_SSL:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configure logging
 logging.basicConfig(
@@ -53,13 +60,13 @@ def fetch_credentials_from_worker():
         if WORKER_API_KEY:
             headers['Authorization'] = f'Bearer {WORKER_API_KEY}'
         
-        # Fetch credentials from Worker - disable SSL verification for development
+        # Fetch credentials from Worker
         logging.info(f"Fetching credentials from Worker API: {WORKER_API_URL}/api/credentials")
         response = requests.get(
-            f"{WORKER_API_URL}/api/credentials", 
-            headers=headers, 
+            f"{WORKER_API_URL}/api/credentials",
+            headers=headers,
             timeout=10,
-            verify=False  # Bypass SSL verification for development
+            verify=VERIFY_SSL
         )
         
         if response.status_code == 200:
@@ -103,57 +110,84 @@ if not fetch_credentials_from_worker():
         'DISCORD_GUILD_ID': os.getenv('DISCORD_GUILD_ID', '')
     }
 
+# Load artists configuration from JSON file with fallback
+def load_artists_config():
+    """
+    Load artists configuration from external JSON file.
+    Falls back to hardcoded list if file is not found for backwards compatibility.
+    """
+    # Get the script directory and navigate to the data folder
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_file = os.path.join(script_dir, '..', 'data', 'artists_config.json')
+
+    try:
+        with open(config_file, 'r', encoding='utf-8') as f:
+            artists_list = json.load(f)
+            logging.info(f"Loaded {len(artists_list)} artists from {config_file}")
+            return artists_list
+    except FileNotFoundError:
+        logging.warning(f"Artists config file not found at {config_file}, using hardcoded fallback")
+        return [
+            {
+                'name': 'Casa 24',
+                'spotify_id': '2QpRYjtwNg9z6KwD4fhC5h',
+                'youtube_id': 'UCshvYG0n1I_gXbM8htuANAg',
+                'instagram_username': 'casa24records',
+            },
+            {
+                'name': 'Chef Lino',
+                'spotify_id': '56tisU5xMB4CYyzG99hyBN',
+                'youtube_id': 'UCTH5Cs-r1YShzfARJLQ5Hzw',
+                'instagram_username': 'chef_lino99',
+            },
+            {
+                'name': 'PYRO',
+                'spotify_id': '5BsYYsSnFsE9SoovY7aQV0',
+                'youtube_id': 'UCY8fZcLURY9LvYJ_fqh91VQ',
+                'instagram_username': 'pyro_0201',
+            },
+            {
+                'name': 'bo.wlie',
+                'spotify_id': '2DqDBHhQzNE3KHZq6yKG96',
+                'youtube_id': 'UCWnUHb8KCdprdkBBts9GxSA',
+                'instagram_username': 'the.bowlieexperience',
+            },
+            {
+                'name': 'Mango Blade',
+                'spotify_id': '4vYClJG7K1FGWMMalEW5Hg',
+                'youtube_id': 'UCkKr9JaItuEsGRn8QEy5HjA',
+                'instagram_username': 'mangobladesonics',
+            },
+            {
+                'name': 'ZACKO',
+                'spotify_id': '3gXXs7vEDPmeJ2HAOCGi8e',
+                'youtube_id': None,
+                'instagram_username': 'zacko.____',
+            },
+            {
+                'name': 'ARANDA',
+                'spotify_id': '7DFovnGo8GZX5PuEyXh6LV',
+                'youtube_id': None,
+                'instagram_username': 'arandajrr',
+            },
+            {
+                'name': 'Casa 24Beats',
+                'spotify_id': None,
+                'youtube_id': 'UCg3IuQwjIBbkvEbDVJZd8VQ',
+                'instagram_username': None,
+            }
+        ]
+    except json.JSONDecodeError as e:
+        logging.error(f"Error parsing artists config JSON: {e}")
+        logging.warning("Using hardcoded fallback due to JSON parse error")
+        return []
+    except Exception as e:
+        logging.error(f"Unexpected error loading artists config: {e}")
+        logging.warning("Using empty list due to unexpected error")
+        return []
+
 # List of artists with their platform IDs
-artists = [
-    {
-        'name': 'Casa 24',
-        'spotify_id': '2QpRYjtwNg9z6KwD4fhC5h',
-        'youtube_id': 'UCshvYG0n1I_gXbM8htuANAg',
-        'instagram_username': 'casa24records',
-    },
-    {
-        'name': 'Chef Lino',
-        'spotify_id': '56tisU5xMB4CYyzG99hyBN',
-        'youtube_id': 'UCTH5Cs-r1YShzfARJLQ5Hzw',
-        'instagram_username': 'chef_lino99',
-    },
-    {
-        'name': 'PYRO',
-        'spotify_id': '5BsYYsSnFsE9SoovY7aQV0',
-        'youtube_id': 'UCY8fZcLURY9LvYJ_fqh91VQ',
-        'instagram_username': 'pyro_0201',
-    },
-    {
-        'name': 'bo.wlie',
-        'spotify_id': '2DqDBHhQzNE3KHZq6yKG96',
-        'youtube_id': 'UCWnUHb8KCdprdkBBts9GxSA',
-        'instagram_username': 'the.bowlieexperience',
-    },
-    {
-        'name': 'Mango Blade',
-        'spotify_id': '4vYClJG7K1FGWMMalEW5Hg',
-        'youtube_id': 'UCkKr9JaItuEsGRn8QEy5HjA',
-        'instagram_username': 'mangobladesonics',
-    },
-    {
-        'name': 'ZACKO',
-        'spotify_id': '3gXXs7vEDPmeJ2HAOCGi8e',
-        'youtube_id': None,
-        'instagram_username': 'zacko.____',
-    },
-    {
-        'name': 'ARANDA',
-        'spotify_id': '7DFovnGo8GZX5PuEyXh6LV',
-        'youtube_id': None,
-        'instagram_username': 'arandajrr',
-    },
-    {
-        'name': 'Casa 24Beats',
-        'spotify_id': None,  # No Spotify presence
-        'youtube_id': 'UCg3IuQwjIBbkvEbDVJZd8VQ',
-        'instagram_username': None,
-    }
-]
+artists = load_artists_config()
 
 # ------------------ HELPER CLASSES ------------------
 
@@ -652,20 +686,20 @@ def scrape_monthly_listeners(artist_id: str, artist_name: str) -> str:
         if listeners is not None:
             logging.info(f"✓ Found {artist_name} listeners with mobile UA: {listeners:,}")
             return str(listeners)
-        
-        # Save debug HTML for problematic artists
-        if artist_name in ['Casa 24', 'ZACKO', 'Chef Lino']:
+
+        # Save debug HTML only if DEBUG mode is enabled
+        if DEBUG:
             debug_file = f"debug_{artist_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
             with open(debug_file, 'w', encoding='utf-8') as f:
                 f.write(response.text)
             logging.warning(f"Could not find monthly listeners for {artist_name}. Debug HTML saved to {debug_file}")
-            
+
             # Extra debugging - look for any numbers near "monthly"
             monthly_regions = re.finditer(r'.{0,100}monthly.{0,100}', response.text, re.IGNORECASE)
             for i, match in enumerate(monthly_regions):
                 if i < 3:  # First 3 occurrences
                     logging.debug(f"Context around 'monthly' #{i+1}: {repr(match.group())}")
-        
+
         logging.warning(f"✗ Could not find monthly listeners for {artist_name} after all attempts")
         return "N/A"
         

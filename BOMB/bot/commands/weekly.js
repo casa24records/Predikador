@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { loadLatestData, loadHistoricalData } = require('../utils/dataLoader');
+const { calculateGrowth, calculateAbsoluteGrowth } = require('../utils/calculations');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -71,16 +72,14 @@ module.exports = {
             totalStats.instagram.followers += artist.instagram?.followers || 0;
             totalStats.instagram.prevFollowers += prevArtist.instagram?.followers || 0;
 
-            // Calculate artist performance
-            const spotifyGrowth = ((artist.spotify?.followers || 0) - (prevArtist.spotify?.followers || 0));
-            const listenersGrowth = (parseInt(artist.spotify?.monthly_listeners) || 0) - (parseInt(prevArtist.spotify?.monthly_listeners) || 0);
-            const youtubeGrowth = ((artist.youtube?.subscribers || 0) - (prevArtist.youtube?.subscribers || 0));
-            const instagramGrowth = ((artist.instagram?.followers || 0) - (prevArtist.instagram?.followers || 0));
+            // Calculate artist performance using shared functions
+            const spotifyGrowth = calculateAbsoluteGrowth(artist, prevArtist, 'spotify-followers');
+            const listenersGrowth = calculateAbsoluteGrowth(artist, prevArtist, 'spotify-listeners');
+            const youtubeGrowth = calculateAbsoluteGrowth(artist, prevArtist, 'youtube-subs');
+            const instagramGrowth = calculateAbsoluteGrowth(artist, prevArtist, 'instagram-followers');
 
             const totalGrowth = spotifyGrowth + youtubeGrowth + instagramGrowth;
-            const growthPercent = prevArtist.spotify?.followers > 0
-                ? ((spotifyGrowth / prevArtist.spotify.followers) * 100)
-                : 0;
+            const growthPercent = calculateGrowth(artist, prevArtist, 'spotify-followers') || 0;
 
             artistPerformance.push({
                 name: artist.name,

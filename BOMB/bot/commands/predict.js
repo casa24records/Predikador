@@ -127,8 +127,7 @@ module.exports = {
       });
 
       embed.setFooter({
-        text: `Casa 24 Records - AI-powered predictions`,
-        iconURL: 'https://i.imgur.com/placeholder.png'
+        text: `Casa 24 Records - AI-powered predictions`
       });
 
       await interaction.editReply({ embeds: [embed] });
