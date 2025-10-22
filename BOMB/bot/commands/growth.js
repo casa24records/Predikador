@@ -41,6 +41,15 @@ module.exports = {
         .setDescription(`Analyzing ${historicalData.length} days of data (${period}-day period)`)
         .setTimestamp();
 
+      // Add warning if using fallback data
+      if (latestData._fallback) {
+        embed.addFields({
+          name: '⚠️ Using Historical Data',
+          value: `Latest data was corrupted. Using data from **${latestData._fallback.fallbackDate}** instead.\n*Fix the data collection script to prevent this issue.*`,
+          inline: false
+        });
+      }
+
       // Analyze growth for Casa 24 (main collective)
       const casa24Artist = latestData.artists?.find(a => a.name === 'Casa 24');
       if (casa24Artist) {

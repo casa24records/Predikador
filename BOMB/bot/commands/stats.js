@@ -66,6 +66,15 @@ module.exports = {
         });
       }
 
+      // Add warning if using fallback data
+      if (data._fallback) {
+        embed.addFields({
+          name: '⚠️ Using Historical Data',
+          value: `Latest data was corrupted. Using data from **${data._fallback.fallbackDate}** instead.\n*Fix the data collection script to prevent this issue.*`,
+          inline: false
+        });
+      }
+
       // Add top artists
       const topArtists = data.artists
         ?.sort((a, b) => {

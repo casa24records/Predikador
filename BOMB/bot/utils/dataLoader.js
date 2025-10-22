@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
+const { validateData, getValidationSummary, isDataCorrupted } = require('./dataValidator');
 
 /**
  * Get all possible data file locations (in priority order)
@@ -95,6 +96,59 @@ function findFirstExistingPath(paths, fileType) {
 }
 
 /**
+ * Find the most recent valid historical data file (synchronous)
+ * @returns {Object|null} Object with {data, date, filePath} or null if none found
+ */
+function findLastValidHistoricalData() {
+  const possiblePaths = getPossibleHistoricalPaths();
+  const historicalPath = findFirstExistingPath(possiblePaths, 'historical directory (for fallback)');
+
+  if (!historicalPath) {
+    console.error('⚠️  No historical data directory found for fallback');
+    return null;
+  }
+
+  try {
+    const files = fsSync.readdirSync(historicalPath);
+
+    // Get JSON files sorted by date (newest first)
+    const jsonFiles = files
+      .filter(f => f.endsWith('.json'))
+      .sort()
+      .reverse();
+
+    console.log(`🔍 Searching through ${jsonFiles.length} historical files for valid data...`);
+
+    // Try each file until we find valid data
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(historicalPath, file);
+        const content = fsSync.readFileSync(filePath, 'utf-8');
+        const data = JSON.parse(content);
+
+        // Validate the data
+        if (!isDataCorrupted(data)) {
+          const date = file.replace('.json', '');
+          console.log(`✅ Found valid historical data: ${date}`);
+          console.log(`   ${getValidationSummary(data)}`);
+          return { data, date, filePath };
+        } else {
+          console.log(`   ⚠️  Skipping ${file} - data is corrupted/empty`);
+        }
+      } catch (fileError) {
+        console.error(`   ⚠️  Failed to read ${file}: ${fileError.message}`);
+      }
+    }
+
+    console.error('❌ No valid historical data found in any file');
+    return null;
+  } catch (error) {
+    console.error(`❌ Error searching historical data: ${error.message}`);
+    return null;
+  }
+}
+
+/**
  * Load the latest analytics data (synchronous version for commands)
  * @returns {Object} Latest analytics data
  */
@@ -124,9 +178,58 @@ function loadLatestData() {
     if (!parsed.artists || !Array.isArray(parsed.artists)) {
       console.error('⚠️  Warning: Data file has unexpected structure');
     } else {
-      console.log(`✅ Successfully loaded data with ${parsed.artists.length} artists`);
+      console.log(`   Found ${parsed.artists.length} artists in file`);
     }
 
+    // Validate data quality
+    const validation = validateData(parsed);
+    console.log(`   ${getValidationSummary(parsed)}`);
+
+    if (isDataCorrupted(parsed)) {
+      console.warn('');
+      console.warn('========================================');
+      console.warn('⚠️  WARNING: Latest data is corrupted!');
+      console.warn('========================================');
+      console.warn(`Reason: ${validation.reason}`);
+      console.warn('Attempting to fall back to most recent valid historical data...');
+      console.warn('========================================');
+
+      const fallbackData = findLastValidHistoricalData();
+
+      if (fallbackData) {
+        console.log('');
+        console.log('========================================');
+        console.log('✅ FALLBACK SUCCESSFUL');
+        console.log('========================================');
+        console.log(`Using data from: ${fallbackData.date}`);
+        console.log(`Source: ${fallbackData.filePath}`);
+        console.log('Note: This is historical data, not today\'s data');
+        console.log('Fix the data collection script to prevent this in the future');
+        console.log('========================================');
+        console.log('');
+
+        // Add metadata to indicate this is fallback data
+        fallbackData.data._fallback = {
+          originalDate: parsed.date,
+          fallbackDate: fallbackData.date,
+          reason: 'Latest data was corrupted (all zeros/nulls)'
+        };
+
+        return fallbackData.data;
+      } else {
+        console.error('');
+        console.error('========================================');
+        console.error('❌ FALLBACK FAILED');
+        console.error('========================================');
+        console.error('No valid historical data available');
+        console.error('Returning corrupted data as last resort');
+        console.error('========================================');
+        console.error('');
+        return parsed; // Return corrupted data as last resort
+      }
+    }
+
+    console.log(`✅ Successfully loaded valid data`);
     return parsed;
   } catch (error) {
     console.error('');
@@ -137,6 +240,73 @@ function loadLatestData() {
     console.error(`Error: ${error.message}`);
     console.error('========================================');
     throw new Error(`Failed to read/parse analytics data: ${error.message}`);
+  }
+}
+
+/**
+ * Find the most recent valid historical data file (async)
+ * @returns {Promise<Object|null>} Object with {data, date, filePath} or null if none found
+ */
+async function findLastValidHistoricalDataAsync() {
+  const possiblePaths = getPossibleHistoricalPaths();
+
+  let historicalPath = null;
+
+  // Find historical directory
+  for (const testPath of possiblePaths) {
+    try {
+      const stats = await fs.stat(testPath);
+      if (stats.isDirectory()) {
+        historicalPath = testPath;
+        break;
+      }
+    } catch (error) {
+      // Path doesn't exist, continue
+    }
+  }
+
+  if (!historicalPath) {
+    console.error('⚠️  No historical data directory found for fallback');
+    return null;
+  }
+
+  try {
+    const files = await fs.readdir(historicalPath);
+
+    // Get JSON files sorted by date (newest first)
+    const jsonFiles = files
+      .filter(f => f.endsWith('.json'))
+      .sort()
+      .reverse();
+
+    console.log(`🔍 Searching through ${jsonFiles.length} historical files for valid data...`);
+
+    // Try each file until we find valid data
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(historicalPath, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(content);
+
+        // Validate the data
+        if (!isDataCorrupted(data)) {
+          const date = file.replace('.json', '');
+          console.log(`✅ Found valid historical data: ${date}`);
+          console.log(`   ${getValidationSummary(data)}`);
+          return { data, date, filePath };
+        } else {
+          console.log(`   ⚠️  Skipping ${file} - data is corrupted/empty`);
+        }
+      } catch (fileError) {
+        console.error(`   ⚠️  Failed to read ${file}: ${fileError.message}`);
+      }
+    }
+
+    console.error('❌ No valid historical data found in any file');
+    return null;
+  } catch (error) {
+    console.error(`❌ Error searching historical data: ${error.message}`);
+    return null;
   }
 }
 
@@ -172,9 +342,58 @@ async function loadLatestDataAsync() {
         if (!parsed.artists || !Array.isArray(parsed.artists)) {
           console.error('⚠️  Warning: Data file has unexpected structure');
         } else {
-          console.log(`✅ Successfully loaded data with ${parsed.artists.length} artists`);
+          console.log(`   Found ${parsed.artists.length} artists in file`);
         }
 
+        // Validate data quality
+        const validation = validateData(parsed);
+        console.log(`   ${getValidationSummary(parsed)}`);
+
+        if (isDataCorrupted(parsed)) {
+          console.warn('');
+          console.warn('========================================');
+          console.warn('⚠️  WARNING: Latest data is corrupted!');
+          console.warn('========================================');
+          console.warn(`Reason: ${validation.reason}`);
+          console.warn('Attempting to fall back to most recent valid historical data...');
+          console.warn('========================================');
+
+          const fallbackData = await findLastValidHistoricalDataAsync();
+
+          if (fallbackData) {
+            console.log('');
+            console.log('========================================');
+            console.log('✅ FALLBACK SUCCESSFUL');
+            console.log('========================================');
+            console.log(`Using data from: ${fallbackData.date}`);
+            console.log(`Source: ${fallbackData.filePath}`);
+            console.log('Note: This is historical data, not today\'s data');
+            console.log('Fix the data collection script to prevent this in the future');
+            console.log('========================================');
+            console.log('');
+
+            // Add metadata to indicate this is fallback data
+            fallbackData.data._fallback = {
+              originalDate: parsed.date,
+              fallbackDate: fallbackData.date,
+              reason: 'Latest data was corrupted (all zeros/nulls)'
+            };
+
+            return fallbackData.data;
+          } else {
+            console.error('');
+            console.error('========================================');
+            console.error('❌ FALLBACK FAILED');
+            console.error('========================================');
+            console.error('No valid historical data available');
+            console.error('Returning corrupted data as last resort');
+            console.error('========================================');
+            console.error('');
+            return parsed; // Return corrupted data as last resort
+          }
+        }
+
+        console.log(`✅ Successfully loaded valid data`);
         return parsed;
       } else {
         console.log(`   ❌ Path exists but is not a file`);
