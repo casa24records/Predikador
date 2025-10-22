@@ -9,5 +9,3 @@ restartPolicyMaxRetries = 10
 
 [env]
 NODE_ENV = "production"
-DATA_PATH = "../data/latest.json"
-HISTORICAL_DATA_PATH = "../data/historical"
