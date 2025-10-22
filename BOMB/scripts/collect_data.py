@@ -23,15 +23,11 @@ from bs4 import BeautifulSoup
 import html
 import urllib3
 
-# SSL verification configuration
-VERIFY_SSL = os.getenv('VERIFY_SSL', 'true').lower() == 'true'
+# Disable SSL warnings for development
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Debug mode configuration
 DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
-
-# Disable SSL warnings only if SSL verification is disabled
-if not VERIFY_SSL:
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configure logging
 logging.basicConfig(
@@ -60,13 +56,13 @@ def fetch_credentials_from_worker():
         if WORKER_API_KEY:
             headers['Authorization'] = f'Bearer {WORKER_API_KEY}'
         
-        # Fetch credentials from Worker
+        # Fetch credentials from Worker - disable SSL verification for development
         logging.info(f"Fetching credentials from Worker API: {WORKER_API_URL}/api/credentials")
         response = requests.get(
             f"{WORKER_API_URL}/api/credentials",
             headers=headers,
             timeout=10,
-            verify=VERIFY_SSL
+            verify=False  # Bypass SSL verification for development
         )
         
         if response.status_code == 200:
