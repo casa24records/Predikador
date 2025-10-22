@@ -975,19 +975,25 @@ def save_data_as_json(data, filename):
 def update_historical_data(data):
     """Updates the historical data files."""
     today = datetime.now().strftime('%Y-%m-%d')
-    
+
+    # Get the script directory and navigate to the correct data folder
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(script_dir, '..', 'data')
+    historical_dir = os.path.join(data_dir, 'historical')
+
     # Create directories if they don't exist
-    os.makedirs('data/historical', exist_ok=True)
-    
+    os.makedirs(historical_dir, exist_ok=True)
+
     # Save today's data in historical folder
-    historical_file = f"data/historical/{today}.json"
+    historical_file = os.path.join(historical_dir, f"{today}.json")
     save_data_as_json(data, historical_file)
-    
+
     # Update latest data file
-    save_data_as_json(data, 'data/latest.json')
-    
+    latest_file = os.path.join(data_dir, 'latest.json')
+    save_data_as_json(data, latest_file)
+
     # Also save as CSV for backward compatibility
-    csv_file = 'data/popularity_scores.csv'
+    csv_file = os.path.join(data_dir, 'popularity_scores.csv')
     artists_data = []
     
     for artist in data['artists']:
@@ -1040,10 +1046,12 @@ if __name__ == "__main__":
     print(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Worker API: {WORKER_API_URL}")
     print("="*60 + "\n")
-    
-    # Ensure data directory exists
-    os.makedirs('data', exist_ok=True)
-    
+
+    # Ensure data directory exists (use absolute path)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(script_dir, '..', 'data')
+    os.makedirs(data_dir, exist_ok=True)
+
     try:
         # Collect all data
         collected_data = collect_all_data()
