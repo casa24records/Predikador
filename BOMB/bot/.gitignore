@@ -13,6 +13,3 @@ npm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
-
-# Copied data (created by copy-data.js during deployment)
-data/
