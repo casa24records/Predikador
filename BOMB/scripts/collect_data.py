@@ -1006,9 +1006,70 @@ def save_data_as_json(data, filename):
     
     logging.info(f"Data saved to {filename}")
 
+def validate_collected_data(data):
+    """
+    Validates collected data to ensure it's not all zeros/nulls.
+    Returns True if data is valid, False otherwise.
+    """
+    if not data or not data.get('artists'):
+        logging.error("Validation failed: No artists data")
+        return False
+
+    # Count artists with at least one non-zero metric
+    valid_artists = 0
+
+    for artist in data['artists']:
+        has_data = False
+
+        # Check Spotify
+        if artist.get('spotify'):
+            spotify = artist['spotify']
+            if (spotify.get('followers', 0) > 0 or
+                spotify.get('popularity_score', 0) > 0 or
+                (spotify.get('monthly_listeners') not in ["N/A", "", None, 0])):
+                has_data = True
+
+        # Check YouTube
+        if artist.get('youtube'):
+            youtube = artist['youtube']
+            if (youtube.get('subscribers', 0) > 0 or
+                youtube.get('total_views', 0) > 0):
+                has_data = True
+
+        # Check Instagram
+        if artist.get('instagram'):
+            instagram = artist['instagram']
+            if instagram.get('followers', 0) > 0:
+                has_data = True
+
+        if has_data:
+            valid_artists += 1
+
+    total_artists = len(data['artists'])
+
+    if valid_artists == 0:
+        logging.error(f"Validation failed: All {total_artists} artists have zero metrics!")
+        logging.error("This indicates ALL API calls failed. Not saving corrupted data.")
+        return False
+
+    # Require at least 50% of artists to have data
+    if valid_artists < total_artists * 0.5:
+        logging.error(f"Validation failed: Only {valid_artists}/{total_artists} artists have valid data")
+        logging.error("This indicates most API calls failed. Not saving potentially corrupted data.")
+        return False
+
+    logging.info(f"✓ Data validation passed: {valid_artists}/{total_artists} artists have valid data")
+    return True
+
 def update_historical_data(data):
     """Updates the historical data files."""
     today = datetime.now().strftime('%Y-%m-%d')
+
+    # VALIDATE DATA BEFORE SAVING
+    if not validate_collected_data(data):
+        error_msg = "Data validation failed - refusing to save corrupted data with all zeros"
+        logging.error(error_msg)
+        raise ValueError(error_msg)
 
     # Get the script directory and navigate to the correct data folder
     script_dir = os.path.dirname(os.path.abspath(__file__))
